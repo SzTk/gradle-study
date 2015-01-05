@@ -1,0 +1,12 @@
+apply plugin:'application'
+apply plugin: "eclipse"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile "junit:junit:4.11"
+}
+
+mainClassName = "predictor.Main"
