@@ -10,3 +10,9 @@ dependencies {
 }
 
 mainClassName = "predictor.Main"
+
+run {
+    if (project.hasProperty('args')) {
+        args project.args.split('\\s+')
+    }
+}
