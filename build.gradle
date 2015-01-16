@@ -45,7 +45,7 @@ checkstyle {
 }
 
 checkstyleMain {
-    checkstyleMain.reports.xml.destination = '${rootProject.buildDir}/reports/checkstyle/main.xml'
+    checkstyleMain.reports.xml.destination = "${rootProject.buildDir}/reports/checkstyle/main.xml"
     checkstyleMain.showViolations = true
     checkstyleMain.ignoreFailures = true
 }
@@ -57,11 +57,11 @@ checkstyleTest {
 findbugs {
     sourceSets = [sourceSets.main]
     ignoreFailures = true
-    reportsDir = file('$project.buildDir}/reports/findbugsReports')
-    effort = 'max'
-    reportLevel = 'high'
-    visitors = ['FindSqlInjection', 'SwitchFailthrough']
-    omitVisitors = ['FindNonShortCircuit']
+    reportsDir = file("${project.buildDir}/reports/findbugsReports")
+    effort = "max"
+    reportLevel = "high"
+    visitors = ["FindSqlInjection", "SwitchFallthrough"]
+    omitVisitors = ["FindNonShortCircuit"]
 }
 
 configurations.all {
