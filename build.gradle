@@ -15,18 +15,18 @@ def defaultEncoding = 'UTF-8'
 tasks.withType (AbstractCompile) each { it. options.encoding = defaultEncoding }
 tasks.withType (GroovyCompile) each { it.groovyOptions.encoding = defaultEncoding }
 
-def versions = [
-    checkstyle: "6.2",
-]
-
-configurations{
+configurations {
     checkstyleConfig
 }
+
+def versions = [
+    checkstyle: '6.2',
+]
 
 dependencies {
     compile 'commons-cli:commons-cli:1.2'
     testCompile "junit:junit:4.11"
-    checkstyleConfig ('com.puppycrawl.tools:checkstyle:${versions.checkstyle}') {
+    checkstyleConfig ("com.puppycrawl.tools:checkstyle:${versions.checkstyle}") {
         transitive = false
     }
 }
@@ -40,8 +40,8 @@ run {
 }
 
 checkstyle {
-    toolVersion = '${versions.checkstyle}'
-    config = resources.text.fromArchiveEntry(configurations.checkstyleConfig, 'sun_checks.xml')
+    toolVersion = "${versions.checkstyle}"
+    config = resources.text.fromArchiveEntry(configurations.checkstyleConfig, 'google_checks.xml')
 }
 
 checkstyleMain {
