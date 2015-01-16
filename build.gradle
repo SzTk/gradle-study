@@ -1,12 +1,34 @@
+plugins {
+  id 'net.saliman.cobertura' version '2.2.5'
+}
 apply plugin:'application'
-apply plugin: "eclipse"
+apply plugin: 'eclipse'
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+apply plugin: 'net.saliman.cobertura'
 
 repositories {
     mavenCentral()
 }
 
+def defaultEncoding = 'UTF-8'
+tasks.withType (AbstractCompile) each { it. options.encoding = defaultEncoding }
+tasks.withType (GroovyCompile) each { it.groovyOptions.encoding = defaultEncoding }
+
+def versions = [
+    checkstyle: "6.2",
+]
+
+configurations{
+    checkstyleConfig
+}
+
 dependencies {
+    compile 'commons-cli:commons-cli:1.2'
     testCompile "junit:junit:4.11"
+    checkstyleConfig ('com.puppycrawl.tools:checkstyle:${versions.checkstyle}') {
+        transitive = false
+    }
 }
 
 mainClassName = "predictor.Main"
@@ -14,5 +36,39 @@ mainClassName = "predictor.Main"
 run {
     if (project.hasProperty('args')) {
         args project.args.split('\\s+')
+    }
+}
+
+checkstyle {
+    toolVersion = '${versions.checkstyle}'
+    config = resources.text.fromArchiveEntry(configurations.checkstyleConfig, 'sun_checks.xml')
+}
+
+checkstyleMain {
+    checkstyleMain.reports.xml.destination = '${rootProject.buildDir}/reports/checkstyle/main.xml'
+    checkstyleMain.showViolations = true
+    checkstyleMain.ignoreFailures = true
+}
+
+checkstyleTest {
+    excludes = ['**/*']
+}
+
+findbugs {
+    sourceSets = [sourceSets.main]
+    ignoreFailures = true
+    reportsDir = file('$project.buildDir}/reports/findbugsReports')
+    effort = 'max'
+    reportLevel = 'high'
+    visitors = ['FindSqlInjection', 'SwitchFailthrough']
+    omitVisitors = ['FindNonShortCircuit']
+}
+
+configurations.all {
+    resolutionStrategy {
+        // Cobertura includes an ASM version that can't handle Java 8, ASM 5.0.3
+        //handles Java8
+        force 'org.ow2.asm:asm:5.0.3'
+        forcedModules = [ 'org.ow2.asm:asm:5.0.3' ]
     }
 }
